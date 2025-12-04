@@ -57,6 +57,19 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  weiqi-frontend:
+    build:
+      context: ./weiqi-frontend
+      dockerfile: Dockerfile
+    container_name: weiqi-frontend
+    ports:
+      - "30000:80"
+    networks:
+      - weiqi-network
+    depends_on:
+      - weiqi-backend
+    restart: unless-stopped
+
 volumes:
   mongo-data:
 
