@@ -1,0 +1,27 @@
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+
+# 编译产物
+weiqi-go-server
+*.exe
+
+# 测试
+*_test.go
+
+# 文档
+*.md
+!README.md
+
+# Python AI（独立构建）
+weiqi-ai/
+
+# 其他
+.env
+.DS_Store
+

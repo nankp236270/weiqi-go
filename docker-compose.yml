@@ -1,0 +1,65 @@
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: weiqi-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASS}
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - weiqi-network
+    command: mongod --quiet --logpath /dev/null
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  weiqi-ai:
+    build:
+      context: ./weiqi-ai
+      dockerfile: Dockerfile
+    container_name: weiqi-ai
+    ports:
+      - "8000:8000"
+    networks:
+      - weiqi-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  weiqi-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: weiqi-backend
+    ports:
+      - "8080:8080"
+    environment:
+      MONGO_URI: mongodb://${MONGO_USER}:${MONGO_PASS}@mongo:27017
+      DB_NAME: ${DB_NAME:-weiqi}
+      COLLECTION_NAME: ${COLLECTION_NAME:-games}
+      SERVER_PORT: ${SERVER_PORT:-8080}
+      AI_SERVICE_URL: http://weiqi-ai:8000
+    networks:
+      - weiqi-network
+    depends_on:
+      mongo:
+        condition: service_healthy
+      weiqi-ai:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
+
+networks:
+  weiqi-network:
+    driver: bridge

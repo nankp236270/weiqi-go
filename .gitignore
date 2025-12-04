@@ -1,0 +1,20 @@
+# Environment variables
+# Never commit this file!
+.env
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+weiqi-go
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*~
+
+# OS-generated files
+.DS_Store
