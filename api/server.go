@@ -307,13 +307,29 @@ func (s *Server) passTurn(c *gin.Context) {
 
 	// 如果游戏结束, 则返回最终得分
 	if g.GameOver {
-		score, err := g.CalculateScore()
+		var score game.ScoreResult
+		var err error
+		
+		// 優先使用 AI 服務計分（更準確）
+		if s.aiClient != nil {
+			score, err = s.aiClient.CalculateScore(g)
+			if err != nil {
+				logger.Warn("AI scoring failed, falling back to local scoring: %v", err)
+				// AI 計分失敗，使用本地計分作為後備
+				score, err = g.CalculateScore()
+			}
+		} else {
+			// 沒有 AI 服務，使用本地計分
+			score, err = g.CalculateScore()
+		}
+		
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": "failed to calculate score",
 			})
 			return
 		}
+		
 		c.JSON(http.StatusOK, gin.H{
 			"message": "game over",
 			"state":   g,

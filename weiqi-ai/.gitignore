@@ -43,3 +43,13 @@ htmlcov/
 # Logs
 *.log
 
+# Models and training data
+models/
+*.pth
+*.pt
+*.h5
+*.pkl
+
+# Logs
+logs/
+*.log

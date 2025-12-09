@@ -1,0 +1,36 @@
+weiqi-ai/
+├── ai
+│   ├── __init__.py
+│   ├── mcts_player.py
+│   ├── mcts.py
+│   ├── network.py
+│   └── scoring.py
+├── api
+│   ├── __init__.py
+│   └── main.py
+├── core
+│   ├── board.py
+│   ├── game.py
+│   └── __init__.py
+├── Dockerfile
+├── examples
+│   ├── ai_vs_ai.py
+│   ├── README.md
+│   └── simple_game.py
+├── PROJECT_STRUCTURE.txt
+├── README_AI.md
+├── README.md
+├── requirements.txt
+├── test_ai.py
+├── tests
+│   ├── __init__.py
+│   ├── test_board.py
+│   └── test_game.py
+├── test_simple.py
+└── training
+    ├── __init__.py
+    ├── self_play.py
+    ├── trainer.py
+    └── train.py
+
+7 directories, 27 files

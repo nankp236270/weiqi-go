@@ -1,97 +1,262 @@
-# 🎮 Weiqi-Go
+# 围棋对战平台 (Weiqi Go)
 
-[![Go Version](https://img.shields.io/badge/Go-1.25-blue.svg)](https://golang.org/)
-[![Python Version](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-success.svg)](https://github.com/your-repo/weiqi-go)
+一个功能完整的围棋对战平台，支持人机对战、AI 自动对弈，并集成了基于 MCTS 和神经网络的智能 AI。
 
-一个功能完整的在线围棋游戏平台，支持玩家对战和人机对弈。
+---
 
-## ✨ 特性
+## 📋 项目简介
 
-- 🎯 **完整的围棋规则引擎**（中国规则）
-- 👥 **玩家对战**（实时匹配）
-- 🤖 **人机对弈**（AI 支持）
-- 🔐 **用户认证系统**（JWT）
-- 🎮 **游戏权限控制**
-- 📝 **结构化日志**（slog）
-- 🐳 **Docker 一键部署**
-- 📊 **完整的 API 文档**
+本项目包含：
+- **前端**：Vue 3 + TypeScript + Element Plus 的现代化 Web 界面
+- **后端**：Go 语言实现的高性能 API 服务
+- **AI 服务**：Python 实现的智能围棋 AI（MCTS + 神经网络）
+- **数据库**：MongoDB 用于数据持久化
+
+---
 
 ## 🚀 快速开始
 
+### 使用 Docker Compose（推荐）
+
 ```bash
-# 1. 克隆项目
-git clone https://github.com/your-repo/weiqi-go.git
+# 克隆项目
+git clone <repository-url>
 cd weiqi-go
 
-# 2. 配置环境
-cp .env.example .env
-# 编辑 .env 设置密码和密钥
+# 启动所有服务
+docker compose up -d
 
-# 3. 一键部署
-make deploy
-
-# 4. 测试 API
-make test-api
+# 访问应用
+# 前端: http://localhost:30000
+# 后端 API: http://localhost:8080
+# AI 服务: http://localhost:8000
 ```
 
-访问服务：
-- 后端 API: http://localhost:8080
-- AI 服务: http://localhost:8000
-- AI 文档: http://localhost:8000/docs
+### 本地开发
 
-## 📚 文档
+#### 前端
+```bash
+cd weiqi-frontend
+npm install
+npm run dev
+```
 
-- [快速开始](快速开始.md) - 详细的安装和使用指南
-- [API 文档](API文档.md) - 完整的 API 接口文档
-- [围棋规则](RULES.md) - 围棋规则规范
-- [项目总结](项目最终总结.md) - 完整的项目总结
+#### 后端
+```bash
+cd weiqi-go
+go mod download
+go run main.go
+```
 
-## 🏗️ 项目架构
+#### AI 服务
+```bash
+cd weiqi-ai
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn api.main:app --host 0.0.0.0 --port 8000
+```
 
-**1. 项目愿景**
-*   构建一个功能完善的网页围棋游戏。
-*   核心功能包括**人机对弈**和**玩家对弈**（作为未来扩展方向）。
-*   AI 应具备高水平棋力，基于**蒙特卡洛树搜索 (MCTS)** 和**强化学习 (RL)**。
+---
 
-**2. 核心架构：混合微服务架构 (Go + Python)**
-*   我们采用前后端分离，后端由两个独立的微服务组成的混合架构，以最大化发挥不同语言的优势。
+## 📁 项目结构
 
-    *   **前端 (Presentation Layer)**
-        *   **技术栈**: **Vue.js + TypeScript**。
-        *   **职责**: 负责所有用户界面的渲染和交互。它是一个“瘦客户端”，不包含任何围棋游戏的核心规则逻辑。只负责向 Go 后端发送玩家操作，并根据返回的数据更新视图。
+```
+weiqi-go/
+├── weiqi-frontend/      # Vue 3 前端
+├── weiqi-ai/            # Python AI 服务
+│   ├── ai/              # AI 核心逻辑（MCTS、神经网络）
+│   ├── api/             # FastAPI 服务
+│   ├── core/            # 围棋核心逻辑
+│   ├── training/        # 训练相关代码
+│   └── scripts/         # 训练和工具脚本
+├── game/                # Go 后端游戏逻辑
+├── api/                 # Go 后端 API
+├── ai/                  # Go AI 客户端
+└── docs/                # 项目文档
+```
 
-    *   **Go 后端 (Game Logic & API Layer)**
-        *   **技术栈**: **Go** (使用标准库 `net/http` 或 Gin 等框架)。
-        *   **职责**:
-            1.  **游戏规则引擎**: 作为游戏世界唯一的“规则权威”，处理落子、提子、胜负判断等所有核心逻辑。
-            2.  **API 网关**: 提供 RESTful API (用于常规请求) 和 WebSocket (用于未来的实时对战)，作为前端与后端系统的通信枢纽。
-            3.  **对局管理**: 管理棋局状态、玩家信息等。
-            4.  **AI 协调者**: 在人机对弈中，当轮到 AI 行动时，它会作为客户端去调用 Python AI 服务的 API 来获取决策。
+---
 
-    *   **Python AI 服务 (Intelligence Layer)**
-        *   **技术栈**: **Python** + **FastAPI** + **PyTorch/TensorFlow**。
-        *   **职责**:
-            1.  **AI 模型推理 (Online)**: 提供一个独立的、无状态的 API 端点 (例如 `/get_move`)。该服务加载预先训练好的神经网络模型，结合 MCTS 算法，接收一个棋盘状态，返回最佳走法。
-            2.  **终局点目 (End-game Scoring)**: 提供一个 API 端点 (例如 `/calculate_score`)，接收最终棋盘状态，返回双方的领地、死子和最终得分。这避免了在 Go 中重复实现复杂的点目逻辑。
-            3.  **AI 模型训练 (Offline)**: 这是一个独立于线上服务的流程。我们将在 Python 项目中实现一个独立的围棋环境，用于强化学习中的大规模自我对弈 (self-play) 和模型训练。
+## 🎮 功能特性
 
-**3. 核心挑战与解决方案：规则一致性**
-*   **问题**: Go（线上环境）和 Python（训练环境）中存在两套独立的围棋规则实现，必须保证它们 100% 等价。
-*   **解决方案**: 我们将采用一个“三层保障体系”：
-    1.  **规则规范文档**: 创建一份独立于代码的详细规则说明文档，作为所有实现的“唯一事实来源”。
-    2.  **共享测试用例库**: 使用一个独立的 Git 仓库，以 JSON 格式存储大量的标准测试用例，覆盖各种棋局场景（提子、打劫、禁入点等）。
-    3.  **自动化交叉验证**: Go 和 Python 的项目都将在各自的 CI/CD 流水线中集成这个共享测试库，确保任何代码提交都不会破坏与另一方规则的一致性。
+### 游戏功能
+- ✅ 标准 19×19 围棋对弈
+- ✅ 人机对战（AI 支持）
+- ✅ AI 自动对弈
+- ✅ 中国规则计分（子空皆地，黑贴 3.75 子）
+- ✅ 劫争检测和处理
+- ✅ 提子判定
+- ✅ 虚手（Pass）支持
 
-**4. 开发流程与迭代计划**
-*   我们将从一个最小可行产品 (MVP) 开始，逐步迭代。
-*   **第一步**: 搭建基础框架。
-    *   Go: 实现基础棋盘逻辑和提子算法。
-    *   Python: 创建一个能返回随机合法走法的简单 AI API。
-    *   Vue: 创建一个能显示棋盘并响应点击的前端界面。
-*   **后续步骤**:
-    *   在 Go 中完善所有围棋规则（打劫、禁入点）。
-    *   在 Python 中实现纯 MCTS 算法，提升 AI 棋力。
-    *   引入神经网络，通过自我对弈进行强化学习训练，并将模型集成到 AI 服务中。
-    *   在 Go 后端和前端支持 WebSocket，以实现玩家间的实时对战。
+### AI 特性
+- ✅ **纯 MCTS**：基于蒙特卡洛树搜索
+- ✅ **神经网络辅助 MCTS**：AlphaGo Zero 风格
+- ✅ **智能计分**：蒙特卡洛模拟或神经网络辅助
+- ✅ **自我对弈训练**：强化学习训练循环
+- ✅ **数据增强**：旋转、翻转等 8 种变换
+
+### 前端特性
+- ✅ 现代化 UI 设计
+- ✅ 实时棋盘更新
+- ✅ 落子预览
+- ✅ 游戏历史记录
+- ✅ 响应式设计
+
+---
+
+## 🤖 AI 系统
+
+### AI 模式
+
+1. **纯 MCTS 模式**（默认）
+   - 无需训练，开箱即用
+   - 基于蒙特卡洛树搜索
+   - 适合快速测试
+
+2. **神经网络模式**
+   - 需要训练模型
+   - 性能更强，更接近人类棋手
+   - 支持持续训练和迭代
+
+### AI 训练（可选）
+
+> **注意**：AI 训练需要大量计算资源，建议在高性能机器上进行。
+
+详细训练指南请参考：
+- [AI 训练和使用指南](./docs/AI_TRAINING_GUIDE.md)
+- [AI 快速开始](./docs/AI_QUICKSTART.md)
+
+---
+
+## 📚 文档索引
+
+### 核心文档
+- [项目完整开发报告](./17-项目完整开发报告.md)
+- [部署指南](./docs/DEPLOYMENT.md)
+- [API 文档](./docs/README.md)
+
+### AI 相关
+- [AI 实现文档](./docs/AI_IMPLEMENTATION.md)
+- [AI 训练指南](./docs/AI_TRAINING_GUIDE.md)
+- [AI 快速开始](./docs/AI_QUICKSTART.md)
+
+### 问题修复记录
+- [Bug 修复汇总](./docs/bug-fixes/修复记录汇总.md)
+
+---
+
+## 🔧 配置说明
+
+### 环境变量
+
+#### AI 服务 (`weiqi-ai`)
+```bash
+AI_MODE=pure_mcts              # AI 模式：pure_mcts 或 neural_mcts
+NUM_SIMULATIONS=400            # MCTS 模拟次数
+SCORING_MODE=monte_carlo       # 计分模式：monte_carlo 或 neural
+SCORING_SIMULATIONS=200        # 计分模拟次数
+MODEL_PATH=/path/to/model.pth  # 神经网络模型路径（neural_mcts 模式需要）
+```
+
+#### 后端服务
+```bash
+AI_SERVICE_URL=http://weiqi-ai:8000  # AI 服务地址
+MONGO_URI=mongodb://weiqi-mongo:27017  # MongoDB 连接
+```
+
+---
+
+## 🛠️ 开发指南
+
+### 技术栈
+
+**前端**：
+- Vue 3
+- TypeScript
+- Element Plus
+- Pinia (状态管理)
+- Axios
+
+**后端**：
+- Go 1.25+
+- Gin (Web 框架)
+- MongoDB
+
+**AI 服务**：
+- Python 3.11+
+- PyTorch
+- FastAPI
+- NumPy
+
+### 代码规范
+
+- 前端：遵循 Vue 3 Composition API 风格
+- 后端：遵循 Go 标准项目结构
+- AI：遵循 Python PEP 8 规范
+
+---
+
+## 📊 性能说明
+
+### AI 性能
+
+| 模式 | 模拟次数 | 每步耗时 | 棋力 |
+|------|----------|----------|------|
+| 纯 MCTS (400) | 400 | ~2-5秒 | 初级 |
+| 纯 MCTS (800) | 800 | ~5-10秒 | 中级 |
+| 神经网络 (400) | 400 | ~1-3秒 | 高级 |
+
+### 资源需求
+
+- **运行 AI 服务**：2GB RAM，1 CPU 核心
+- **训练 AI 模型**：8GB+ RAM，GPU 推荐（否则极慢）
+
+---
+
+## 🐛 已知问题
+
+- AI 训练在 CPU 上非常慢（建议使用 GPU）
+- 大规模自我对弈需要大量磁盘空间
+- Docker 镜像较大（~8GB，主要是 PyTorch）
+
+---
+
+## 🤝 贡献指南
+
+欢迎提交 Issue 和 Pull Request！
+
+---
+
+## 📝 更新日志
+
+### 2025-12-09
+- ✅ 完成 AI 系统集成
+- ✅ 实现自动训练系统
+- ✅ 优化 Docker 构建
+- ✅ 修复训练相关 Bug
+- ✅ 文档整理和简体化
+
+### 2025-12-06
+- ✅ 完成前端开发
+- ✅ 完成后端 API
+- ✅ 集成 MongoDB
+
+---
+
+## 📄 许可证
+
+MIT License
+
+---
+
+## 👥 作者
+
+[Your Name]
+
+---
+
+## 🙏 致谢
+
+- AlphaGo Zero 论文提供的 AI 架构灵感
+- 围棋社区的支持和反馈

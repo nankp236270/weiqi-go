@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# 虛擬環境（不應該在 Docker 內）
+venv/
+env/
+ENV/
+.venv/
+
+# 訓練相關（不應該在 Docker 內）
+models/
+logs/
+*.pkl
+*.pth
+*.log
+*.txt.log
+training_history.txt
+evolution_history.json
+
+# 測試和開發
+test_*.py
+*_test.py
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 文檔
+*.md
+docs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Git
+.git/
+.gitignore
+
+# 臨時文件
+*.tmp
+*.bak
+*.swp
+*~
+
+# 腳本（只用於本機訓練）
+scripts/auto_train.sh
+scripts/monitor_training.sh
+scripts/stop_training.sh
+scripts/train_*.sh
+快速安裝.sh
+開始自動訓練.sh
+停止訓練.sh
+
+# 配置文件（使用環境變量代替）
+training_config.ini

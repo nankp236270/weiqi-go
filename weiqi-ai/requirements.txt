@@ -5,3 +5,9 @@ numpy==2.2.0
 pytest==8.3.4
 httpx==0.28.1
 
+# 神经网络和深度学习（更新到支持 Python 3.12 的版本）
+torch>=2.2.0
+torchvision>=0.17.0
+
+# 数据处理
+scipy>=1.11.4

@@ -180,9 +180,9 @@ func (g *Game) PassTurn() error {
 	return nil
 }
 
-// 后期需要修改替换或者完全优化
 // CalculateScore 根据中国规则计算最终得分
-// 简化：假设终局时棋盘上所有棋子都是活棋
+// 注意：这是简化的本地计分实现，作为后备方案
+// 推荐使用 CalculateScoreWithAI 获得更准确的结果
 func (g *Game) CalculateScore() (ScoreResult, error) {
 	if !g.GameOver {
 		return ScoreResult{}, errors.New("game is not over yet")
